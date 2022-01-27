@@ -213,4 +213,64 @@ alter table empleados
 		on delete no action on update cascade;
         
 alter table seguridad
-	
+	add numdepto int unsigned not null,
+    add constraint fk_seguridad_deptos foreign key (numdepto) references deptos (numdepto)
+		on delete no action on update cascade;
+        
+-- Ejercicio 5
+--
+alter table empleados
+	add jubilacion date default null after nomempleado;
+--
+create table obrasmasbuscadas
+(
+	codobras int,
+    nomobra varchar(60),
+    codautor int unsigned,
+    constraint	pk_obrasmasbuscadas primary key (codobras),
+    constraint fk_obrasmasbuscadas_artistas foreign key (codautor) references artistas (codartistas)
+		on delete no action on update cascade
+);
+
+alter table obrasmasbuscadas
+	-- drop index pk_obrasmasbuscadas,
+    -- drop primary key,
+    -- modify codautor int unsigned after codobras,
+    add constraint pk_obrasmasbuscadas primary key(codobras, codautor);
+    
+--
+alter table obrasmasbuscadas
+
+	add estilo varchar(30),
+    add codtipoObra int unsigned,
+    add constraint fk_obrasmasbuscadas_tipoObra foreign key (codtipoObra) references tipoObras (codtipoObra)
+		on delete no action on update cascade,
+    add valorEstimado decimal(12,2);
+
+--
+alter table obrasmasbuscadas
+
+	drop foreign key fk_obrasmasbuscadas_tipoObra,
+    drop index fk_obrasmasbuscadas_tipoObra,
+    drop foreign key fk_obrasmasbuscadas_artistas,
+	drop index fk_obrasmasbuscadas_artistas;
+    
+    
+    
+/* 
+.Cuando haya obras en una sala, no se podrá modificar el código de sala 
+-- on update no action
+.Si borramos un artista, sus obras quedarán sin artista
+-- on delete set null
+.Cuando asignamos un empleado de seguridad a una sala, ya no se podrá modificar el codigo empleado
+de seguridad
+-- on update no action 
+.Si modificamos los estilos, las obras asociadas a dicho estilo, se quedarán sin estilo asociado
+-- on update set null
+.Cuando eliminamos un tipo de obra, las obras asociadas quedarán sin tipo
+-- on delete set null
+.Cuando modificamos el código de un empleado, desaparecerán los restaurantes asociados
+-- [NO SE PUEDE HACER] 
+.Cuando eliminamos el código de un empleado, desaparecerán los restaurantes asociados
+-- on delete cascade
+*/
